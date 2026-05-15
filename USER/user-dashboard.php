@@ -487,7 +487,7 @@ body{
 
     <li class="nav-item">
       <a class="nav-link"
-         href="#">
+         href="my-orders.php">
 
         <i class="bi bi-bag-check-fill"></i>
         My Orders
@@ -1071,22 +1071,23 @@ body{
 
 <script>
 
+/* =========================
+   ELEMENTS
+========================= */
 const categoryDropdown = document.getElementById("categorySelect");
 const serviceDropdown = document.getElementById("serviceSelect");
-
 const cards = document.querySelectorAll(".item");
 
 /* DEFAULT FILTER */
 filterCards();
 
-/* CATEGORY CHANGE */
+/* EVENTS */
 categoryDropdown.addEventListener("change", filterCards);
-
-/* SERVICE CHANGE */
 serviceDropdown.addEventListener("change", filterCards);
 
-
-/* FILTER FUNCTION */
+/* =========================
+   FILTER FUNCTION
+========================= */
 function filterCards() {
 
   const selectedCategory = categoryDropdown.value;
@@ -1096,37 +1097,27 @@ function filterCards() {
 
     const cardCategory = card.getAttribute("data-category");
 
-    /* MULTIPLE SERVICES SUPPORT */
-    const cardServices = card.getAttribute("data-service").split(",");
+    const cardServices = card
+      .getAttribute("data-service")
+      .split(",")
+      .map(s => s.trim());
 
-    /* SHOW CARD */
     if (
       cardCategory === selectedCategory &&
       cardServices.includes(selectedService)
     ) {
-
       card.style.display = "block";
-
-    }
-
-    /* HIDE CARD */
-    else {
-
+    } else {
       card.style.display = "none";
-
     }
 
   });
 
 }
 
-</script>
-
-
-
-<!-- QUANTITY JS -->
-<script>
-
+/* =========================
+   QUANTITY SYSTEM
+========================= */
 const quantities = {};
 
 function changeQty(item, change){
@@ -1142,64 +1133,60 @@ function changeQty(item, change){
   }
 
   document.getElementById(item).innerText = quantities[item];
-
 }
 
-</script>
-<script>
+/* =========================
+   PROCEED ORDER (FINAL FIX)
+========================= */
 function proceedOrder(){
 
     let selectedItems = [];
-
     let totalClothes = 0;
-
     let totalPrice = 0;
 
-    /* GET ALL CARDS */
-    document.querySelectorAll(".item")
-    .forEach(card => {
+    let clothList = [];
 
-        let itemName =
-            card.querySelector("h5").innerText;
+    let serviceType = serviceDropdown.value; // ✅ FIXED SERVICE TYPE
 
-        let itemPrice =
-            parseInt(
-                card.querySelector(".price")
-                .innerText.replace("₹","")
-            );
+    /* GET ALL ITEMS */
+    document.querySelectorAll(".item").forEach(card => {
 
-        let qtySpan =
-            card.querySelector(".qty-box span");
+        let itemName = card.querySelector("h5").innerText;
 
-        let qty =
-            parseInt(qtySpan.innerText);
+        let itemPrice = parseInt(
+            card.querySelector(".price").innerText.replace("₹","")
+        );
+
+        let qty = parseInt(
+            card.querySelector(".qty-box span").innerText
+        );
 
         if(qty > 0){
 
             selectedItems.push({
-
                 name: itemName,
                 price: itemPrice,
                 qty: qty
-
             });
 
             totalClothes += qty;
-
             totalPrice += itemPrice * qty;
-        }
 
+            /* ✅ CLOTH LIST FIX */
+            clothList.push(itemName);
+        }
     });
 
     /* NOTHING SELECTED */
     if(selectedItems.length === 0){
-
         alert("Please select at least one item");
-
         return;
     }
 
-    /* SAVE TO LOCAL STORAGE */
+    /* =========================
+       SAVE TO LOCAL STORAGE
+    ========================= */
+
     localStorage.setItem(
         "washwave_order",
         JSON.stringify(selectedItems)
@@ -1215,10 +1202,21 @@ function proceedOrder(){
         totalPrice
     );
 
+    /* ✅ NEW FIXES */
+    localStorage.setItem(
+        "washwave_service_type",
+        serviceType
+    );
+
+    localStorage.setItem(
+        "washwave_cloth_list",
+        clothList.join(", ")
+    );
+
     /* REDIRECT */
-    window.location.href =
-        "order-summary.php";
+    window.location.href = "order-summary.php";
 }
+
 </script>
 
 <!-- Bottom Nav (Mobile Only) -->

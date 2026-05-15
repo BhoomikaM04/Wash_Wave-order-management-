@@ -176,9 +176,10 @@ body{
 
     <form action="../save-order.php" method="POST" onsubmit="return prepareOrder()">
 
-        <input type="hidden" name="service_type" id="serviceTypeInput">
-        <input type="hidden" name="total_clothes" id="totalClothesInput">
-        <input type="hidden" name="total_price" id="totalPriceInput">
+       <input type="hidden" name="service_type" id="serviceTypeInput">
+<input type="hidden" name="total_clothes" id="totalClothesInput">
+<input type="hidden" name="total_price" id="totalPriceInput">
+<input type="hidden" name="cloth_list" id="clothListInput">
 
         <div class="mb-3">
             <label class="fs-5">Address</label>
@@ -219,38 +220,53 @@ body{
 
 <script>
 
-/* LOAD DATA */
 let orderData = JSON.parse(localStorage.getItem("washwave_order")) || [];
 let totalClothes = localStorage.getItem("washwave_total_clothes") || 0;
 let totalPrice = localStorage.getItem("washwave_total_price") || 0;
 
-let itemsContainer = document.getElementById("itemsContainer");
-let serviceText = "";
+/* 👇 THIS IS YOUR SERVICE TYPE (IMPORTANT FIX) */
+let serviceType = localStorage.getItem("washwave_service_type") || "Laundry";
 
+let itemsContainer = document.getElementById("itemsContainer");
+
+/* CLOTH LIST STRING */
+let clothList = "";
+
+/* =========================
+   RENDER ITEMS
+========================= */
 orderData.forEach(item => {
-    serviceText += item.name + " x " + item.qty + ", ";
+
+    // 👇 cloth list only
+    clothList += `${item.name} x ${item.qty}, `;
 
     itemsContainer.innerHTML += `
-    <div class="item-card">
-        <div class="d-flex justify-content-between">
-            <div>
-                <h5>${item.name}</h5>
-                <p class="mb-0 text-muted">Qty: ${item.qty}</p>
+        <div class="item-card">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h5 class="mb-1">${item.name}</h5>
+                    <p class="mb-0 text-muted">Qty: ${item.qty}</p>
+                </div>
+
+                <h5>₹${item.price * item.qty}</h5>
             </div>
-            <h5>₹${item.price * item.qty}</h5>
         </div>
-    </div>`;
+    `;
 });
 
+/* =========================
+   SHOW TOTALS
+========================= */
 document.getElementById("totalClothes").innerText = totalClothes;
 document.getElementById("totalPrice").innerText = totalPrice;
 
-/* DATE FIX */
+/* =========================
+   DATE RESTRICTION
+========================= */
 window.onload = function () {
 
     const dateInput = document.getElementById("pickup_date");
-
-    if (!dateInput) return;
 
     let today = new Date();
     today.setDate(today.getDate() + 1);
@@ -262,20 +278,29 @@ window.onload = function () {
     dateInput.min = `${yyyy}-${mm}-${dd}`;
 };
 
-/* SUBMIT */
+/* =========================
+   SUBMIT ORDER
+========================= */
 function prepareOrder() {
 
-    if(orderData.length === 0){
+    if (orderData.length === 0) {
         alert("No items selected!");
         return false;
     }
 
-    document.getElementById("serviceTypeInput").value = serviceText;
+    /* SERVICE TYPE (laundry / ironing etc.) */
+    document.getElementById("serviceTypeInput").value = serviceType;
+
+    /* CLOTH LIST (shirt x1, jeans x2 etc.) */
+    document.getElementById("clothListInput").value = clothList;
+
+    /* TOTALS */
     document.getElementById("totalClothesInput").value = totalClothes;
     document.getElementById("totalPriceInput").value = totalPrice;
 
     return true;
 }
+
 
 </script>
 
