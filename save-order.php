@@ -73,15 +73,33 @@ $stmt->bind_param(
 ========================= */
 if ($stmt->execute()) {
 
-    echo "<script>
-        alert('Order placed successfully!');
+    // Inject SweetAlert2 script directly onto the blank processing page to display the popup nicely
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f8f9fa; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Order Placed!',
+                text: 'Your WashWave laundry request has been recorded successfully.',
+                icon: 'success',
+                confirmButtonColor: '#333333',
+                confirmButtonText: 'View My Orders',
+                allowOutsideClick: false
+            }).then((result) => {
+                // Clear the temporary local storage tracking baskets
+                localStorage.removeItem('washwave_order');
+                localStorage.removeItem('washwave_total_clothes');
+                localStorage.removeItem('washwave_total_price');
+                localStorage.removeItem('washwave_service_type');
+                localStorage.removeItem('washwave_cloth_list');
 
-        localStorage.removeItem('washwave_order');
-        localStorage.removeItem('washwave_total_clothes');
-        localStorage.removeItem('washwave_total_price');
-        localStorage.removeItem('washwave_service_type');
-
-        window.location.href='USER/my-orders.php';
+                // Cleanly redirect to user orders table layout page
+                window.location.href = 'USER/my-orders.php';
+            });
+        });
     </script>";
 
 } else {

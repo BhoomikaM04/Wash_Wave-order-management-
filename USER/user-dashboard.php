@@ -17,10 +17,11 @@ if (!isset($_SESSION['user_id'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
 /* ==========================================================================
-   Base Styles & Resets (Admin Theme Alignment)
+   Base Styles & Resets
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -34,25 +35,24 @@ body {
     overflow-x: hidden;
 }
 
-/* Layout Core Container */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    flex-direction: column; /* Mobile/Tablet Default */
+    flex-direction: column; /* Mobile/Tablet base layout */
 }
 
 /* ==========================================================================
-   Navigation Component (Identical to Admin Dashboard Mechanics)
+   Navigation Component & High-Clarity Branding Layout
    ========================================================================== */
 .sidebar {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 75px; 
     background: #fff;
     box-shadow: 0 -3px 12px rgba(0,0,0,.12);
-    z-index: 999;
+    z-index: 999999; /* Forces navbar buttons to be on the top layer across all devices */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,11 +64,43 @@ body {
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
+/* Large screen variant logo */
 .logo {
-    display: none; /* Hidden on mobile/tablet */
+    display: none; 
+}
+
+/* First Element Mobile Brand Box Container (Non-clickable standalone asset) */
+.mobile-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.mobile-logo-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+    
+    /* Blurriness Patch: Uses high contrast edge rendering alongside smooth interpolation filtering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+}
+
+.brand-label {
+    font-size: 9px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .menu a {
@@ -81,6 +113,7 @@ body {
     flex: 1;
     gap: 4px;
     transition: 0.2s ease;
+    cursor: pointer;
 }
 
 .menu a i {
@@ -93,17 +126,16 @@ body {
 }
 
 /* ==========================================================================
-   Main Workspace Frame Layout
+   Main Content Structure Setup
    ========================================================================== */
 .main {
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-bottom: 90px; /* Leave clean space for bottom nav bar on mobile */
+    padding-bottom: 95px; /* Leaves clear space for mobile sticky bar layout rules */
 }
 
-/* Dashboard Original Welcome Box Typography Setup */
 .welcome-box h1 {
     font-size: 38px;
     font-weight: 700;
@@ -116,15 +148,11 @@ body {
     font-weight: normal;
 }
 
-/* Base Content Workspace Area */
 .content {
     padding: 30px 20px;
     width: 100%;
 }
 
-/* ==========================================================================
-   Form Fields / Dropdown Selectors
-   ========================================================================== */
 .form-select {
     border-radius: 8px;
     border: 1px solid #ced4da;
@@ -145,7 +173,7 @@ body {
 }
 
 /* ==========================================================================
-   Laundry Selection Cards
+   Laundry Choice Cards Configuration
    ========================================================================== */
 .laundry-card {
     background: white;
@@ -182,7 +210,6 @@ body {
     font-weight: 600;
 }
 
-/* Quantity Adjusters */
 .qty-box {
     display: flex;
     justify-content: center;
@@ -217,9 +244,6 @@ body {
     text-align: center;
 }
 
-/* ==========================================================================
-   Action Buttons
-   ========================================================================== */
 .proceed-btn {
     background-color: #333;
     border-color: #333;
@@ -238,25 +262,24 @@ body {
 }
 
 /* ==========================================================================
-   Desktop View Overrides (Transitions exactly at 1024px like your Dashboard)
+   Desktop Responsive Breakpoints (Targets viewports larger than 768px/Tablets)
    ========================================================================== */
-@media (min-width: 1024px) {
+@media (min-width: 769px) {
     .dashboard-container {
-        flex-direction: row; /* Layout switches side-by-side */
+        flex-direction: row; 
     }
 
-    /* Left-anchored vertical menu design blueprint */
     .sidebar {
         position: fixed;
         top: 0;
         bottom: auto;
         left: 0;
-        width: 110px;
+        width: 120px; 
         height: 100vh;
         box-shadow: 3px 0 12px rgba(0,0,0,.08);
         flex-direction: column;
         justify-content: flex-start;
-        padding-top: 20px;
+        padding-top: 25px;
         background: #fff;
     }
 
@@ -269,10 +292,19 @@ body {
 
     .logo {
         display: block;
-        width: 60px;
-        height: auto;
-        margin-bottom: 30px;
+        width: 85px;
+        height: 85px;
+        margin-bottom: 25px;
         border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #eee;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: auto;
+    }
+
+    .mobile-logo-container {
+        display: none !important;
     }
 
     .menu a {
@@ -282,10 +314,9 @@ body {
         font-size: 12px;
     }
 
-    /* Shift contents cleanly away from the static desktop navigation layout block */
     .main {
-        margin-left: 110px;
-        width: calc(100% - 110px);
+        margin-left: 120px;
+        width: calc(100% - 120px);
         padding-bottom: 0; 
     }
     
@@ -295,7 +326,9 @@ body {
 }
 
 @media(max-width: 768px) {
-    .welcome-box h1 { font-size: 32px; }
+    .welcome-box h1 { 
+      font-size: 32px; 
+    }
 }
 </style>
 </head>
@@ -306,15 +339,31 @@ body {
 
     <div class="sidebar">
         <div class="menu">
-            <img src="images/washwave-logo.jpg" class="logo" alt="Logo">
-            <a href="user-dashboard.php" class="active-link"><i class="fas fa-th-large"></i>Dashboard</a>
-            <a href="my-orders.php"><i class="fas fa-box"></i>My Orders</a>
-            <a href="user-logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
+            <img src="HOME-Images/wash_wave-logo.jpg" class="logo" alt="Logo">
+            
+            <div class="mobile-logo-container">
+                <img src="HOME-Images/wash_wave-logo.jpg" class="mobile-logo-icon" alt="Brand Logo">
+                <span class="brand-label">WashWave</span>
+            </div>
+            
+            <a href="user-dashboard.php" class="active-link">
+                <i class="fas fa-th-large"></i>
+                Dashboard
+            </a>
+            
+            <a href="my-orders.php">
+                <i class="fas fa-box"></i>
+                My Orders
+            </a>
+            
+            <a href="./user-logout.php">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
         </div>
     </div>
 
     <div class="main">
-
         <div class="content">
             
             <div class="welcome-box mb-4 text-center text-md-start">
@@ -782,12 +831,11 @@ body {
             </div>
 
         </div>
-
     </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 /* =========================
@@ -800,7 +848,10 @@ const cards = document.querySelectorAll(".item");
 filterCards();
 
 categoryDropdown.addEventListener("change", filterCards);
-serviceDropdown.addEventListener("change", filterCards);
+serviceDropdown.addEventListener("change", () => {
+    filterCards();
+    updateUiCounters();
+});
 
 function filterCards() {
   const selectedCategory = categoryDropdown.value;
@@ -824,66 +875,115 @@ function filterCards() {
   });
 }
 
-/* =========================
-   QUANTITY CORE SYSTEM
-========================= */
-const quantities = {};
+/* ==========================================================================
+   MULTI-SERVICE QUANTITY SYSTEM
+   ========================================================================== */
+const multiQuantities = {};
 
-function changeQty(item, change){
-  if(!quantities[item]){
-    quantities[item] = 0;
+function changeQty(itemUniqueId, change) {
+  const currentService = serviceDropdown.value;
+  const stateKey = `${itemUniqueId}_${currentService}`;
+
+  if (!multiQuantities[stateKey]) {
+    multiQuantities[stateKey] = 0;
   }
 
-  quantities[item] += change;
+  multiQuantities[stateKey] += change;
 
-  if(quantities[item] < 0){
-    quantities[item] = 0;
+  if (multiQuantities[stateKey] < 0) {
+    multiQuantities[stateKey] = 0;
   }
 
-  document.getElementById(item).innerText = quantities[item];
+  document.getElementById(itemUniqueId).innerText = multiQuantities[stateKey];
 }
 
-/* =========================
-   PROCEED ORDER EXPORT
-========================= */
-function proceedOrder(){
+function updateUiCounters() {
+  const currentService = serviceDropdown.value;
+  
+  cards.forEach(card => {
+    const span = card.querySelector(".qty-box span");
+    const itemUniqueId = span.id;
+    const stateKey = `${itemUniqueId}_${currentService}`;
+    
+    span.innerText = multiQuantities[stateKey] || 0;
+  });
+}
+
+/* ==========================================================================
+   PROCEED ORDER EXPORT WITH SWEETALERT2 POPUPS
+   ========================================================================== */
+function proceedOrder() {
     let selectedItems = [];
     let totalClothes = 0;
     let totalPrice = 0;
     let clothList = [];
-    let serviceType = serviceDropdown.value;
+    let uniqueServicesUsed = new Set(); 
 
-    document.querySelectorAll(".item").forEach(card => {
-        let qty = parseInt(card.querySelector(".qty-box span").innerText);
+    const serviceNames = {
+        'laundry': 'Regular Laundry',
+        'dryclean': 'Dry Cleaning',
+        'ironing': 'Ironing',
+        'wash-fold': 'Wash & Fold'
+    };
 
-        if(qty > 0){
-            let itemName = card.querySelector("h5").innerText;
-            let itemPrice = parseInt(card.querySelector(".price").innerText.replace("₹",""));
+    for (const [key, qty] of Object.entries(multiQuantities)) {
+        if (qty > 0) {
+            const underscoreIdx = key.lastIndexOf('_');
+            const itemUniqueId = key.substring(0, underscoreIdx);
+            const itemService = key.substring(underscoreIdx + 1);
+
+            const targetSpan = document.getElementById(itemUniqueId);
+            const parentCard = targetSpan.closest(".laundry-card");
+            
+            let itemName = parentCard.querySelector("h5").innerText;
+            let itemPrice = parseInt(parentCard.querySelector(".price").innerText.replace("₹", ""));
+
+            if (serviceNames[itemService]) {
+                uniqueServicesUsed.add(serviceNames[itemService]);
+            }
 
             selectedItems.push({
                 name: itemName,
                 price: itemPrice,
-                qty: qty
+                qty: qty,
+                service: serviceNames[itemService] || itemService
             });
 
             totalClothes += qty;
             totalPrice += itemPrice * qty;
-            clothList.push(itemName);
+            clothList.push(`${itemName} x ${qty}`);
         }
-    });
+    }
 
-    if(selectedItems.length === 0){
-        alert("Please select at least one item");
+    if (selectedItems.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Empty Basket!',
+            text: 'Please select at least one garment or service item before moving forward.',
+            confirmButtonColor: '#333333'
+        });
         return;
     }
+
+    let finalServiceTypeString = Array.from(uniqueServicesUsed).join(", ");
 
     localStorage.setItem("washwave_order", JSON.stringify(selectedItems));
     localStorage.setItem("washwave_total_clothes", totalClothes);
     localStorage.setItem("washwave_total_price", totalPrice);
-    localStorage.setItem("washwave_service_type", serviceType);
     localStorage.setItem("washwave_cloth_list", clothList.join(", "));
+    localStorage.setItem("washwave_service_type", finalServiceTypeString);
 
-    window.location.href = "order-summary.php";
+    Swal.fire({
+        icon: 'success',
+        title: 'Items Confirmed!',
+        text: 'Generating your custom order summary breakdown...',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didClose: () => {
+            window.location.href = "order-summary.php";
+        }
+    });
 }
 </script>
 </body>

@@ -28,55 +28,268 @@ $active_customers = $active_cust_row['active'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body { background: #f8f9fa; font-family: Arial, sans-serif; margin: 0; color: #333; }
-        
-        /* Layout Structure matching Dashboard Layout */
-        .dashboard-container { display: flex; min-height: 100vh; flex-direction: column; }
-        .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #fff; box-shadow: 0 -3px 12px rgba(0,0,0,.12); z-index: 999; display: flex; align-items: center; justify-content: center; }
-        .menu { display: flex; flex-direction: row; justify-content: space-around; align-items: center; width: 100%; padding: 0 10px; }
-        .logo { display: none; }
-        
-        /* Sidebar Navigation Standard Links (RESTORED EXACTLY FROM DASHBOARD) */
-        .menu a { text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 11px; color: black; flex: 1; gap: 4px; }
-        .menu a i { font-size: 20px; }
-        .menu a:hover { color: rgb(106, 105, 105); }
-        
-        .main { width: 100%; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
-        
-        /* Dynamic Standalone Header Area */
-        .header { display: flex; align-items: center; padding: 35px 25px 20px 25px; background: transparent; gap: 15px; }
-        .header h1 { font-size: 32px; font-weight: 500; color: #1e293b; margin: 0; letter-spacing: -0.5px; }
-        .header i { color: #4f46e5; font-size: 28px; }
+ * {
+    box-sizing: border-box;
+}
 
-        .content { padding: 0 25px 25px 25px; width: 100%; }
+body {
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #333;
+}
 
-        /* MATCHED TO DASHBOARD: Mini Cards Layout */
-        .mini-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; border-left: 4px solid #4f46e5; }
-        .mini-card i { color: #4f46e5; background: #eeebff; padding: 12px; border-radius: 8px; }
+/* Layout Structure matching Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
 
-        /* Corporate CRM Table Layout Canvas */
-        .table-card { background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); padding: 25px; margin-top: 25px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; }
-        
-        /* CHANGED: Custom styles to enforce the #212529 dark background across the entire header row */
-        .custom-dark-header { background-color: #212529 !important; }
-        .custom-dark-header th { padding: 14px 16px; font-weight: 600; color: #ffffff !important; background-color: #212529 !important; border-bottom: none; }
-        
-        td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px; }
-        tr:hover td { background-color: #f8fafc; }
-        
-        .avatar-sub { width: 36px; height: 36px; background: #eeebff; color: #4f46e5; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 700; font-size: 13px; border: 1px solid #e0dbff; }
-        .count-badge { background-color: #e0fbf7; color: #007764; padding: 5px 12px; border-radius: 6px; font-weight: 700; font-size: 12px; border: 1px solid #c1f6ed; display: inline-block; }
+/* --- DEFAULT DESKTOP LAYOUT (Matches dashboard dimensions) --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    width: 180px; /* Synchronized wide desktop menu channel */
+    height: 100vh;
+    background: #fff;
+    box-shadow: 3px 0 12px rgba(0,0,0,.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+    z-index: 999;
+}
 
-        @media (min-width: 1024px) {
-            .dashboard-container { flex-direction: row; }
-            .sidebar { position: fixed; top: 0; bottom: auto; left: 0; width: 110px; height: 100vh; box-shadow: 3px 0 12px rgba(0,0,0,.08); flex-direction: column; justify-content: flex-start; padding-top: 20px; background: #fff; }
-            .menu { flex-direction: column; justify-content: flex-start; gap: 10px; height: 100%; }
-            .logo { display: block; width: 60px; height: auto; margin-bottom: 30px; border-radius: 50%; }
-            .menu a { flex: none; margin: 12px 0; width: 100%; font-size: 12px; }
-            .main { margin-left: 110px; width: calc(100% - 110px); padding-bottom: 0; }
-        }
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+}
+
+/* Large, Clear ROUND Sidebar Logo */
+.logo {
+    display: block;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 25px auto;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #eee;
+    background: #fff;
+}
+
+/* Sidebar Navigation Standard Links */
+.menu a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: black;
+    gap: 4px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+.menu a i {
+    font-size: 20px;
+}
+
+.menu a:hover {
+    color: rgb(106, 105, 105);
+}
+
+/* Shifted main content area to stay perfectly clear of the sidebar */
+.main {
+    margin-left: 180px;
+    width: calc(100% - 180px);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+    min-height: 100vh;
+}
+
+/* Dynamic Standalone Header Area */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 35px 25px 20px 25px;
+    background: transparent;
+    gap: 15px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 500;
+    color: #1e293b;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.header i {
+    color: #4f46e5;
+    font-size: 28px;
+}
+
+.content {
+    padding: 0 25px 25px 25px;
+    width: 100%;
+}
+
+/* Mini Cards Layout */
+.mini-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-left: 4px solid #4f46e5;
+}
+
+.mini-card i {
+    color: #4f46e5;
+    background: #eeebff;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+/* Corporate CRM Table Layout Canvas */
+.table-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    padding: 25px;
+    margin-top: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-dark-header {
+    background-color: #212529 !important;
+}
+
+.custom-dark-header th {
+    padding: 14px 16px;
+    font-weight: 600;
+    color: #ffffff !important;
+    background-color: #212529 !important;
+    border-bottom: none;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: 14px;
+}
+
+tr:hover td {
+    background-color: #f8fafc;
+}
+
+.avatar-sub {
+    width: 36px;
+    height: 36px;
+    background: #eeebff;
+    color: #4f46e5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 13px;
+    border: 1px solid #e0dbff;
+}
+
+.count-badge {
+    background-color: #e0fbf7;
+    color: #007764;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    border: 1px solid #c1f6ed;
+    display: inline-block;
+}
+
+/* --- RESPONSIVE MOBILE OVERRIDES (Hides the logo inside the mobile screen variant) --- */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        box-shadow: 0 -3px 12px rgba(0,0,0,.12);
+        padding-top: 0;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+    }
+
+    .menu {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    /* Hides logo on mobile screens as requested */
+    .logo {
+        display: none !important;
+    }
+
+    .menu a {
+        font-size: 11px;
+        flex: 1;
+        margin: 0;
+    }
+
+    .menu a i {
+        font-size: 20px;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+        padding-bottom: 80px;
+    }
+
+    .header {
+        padding: 20px 20px 10px 20px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .content {
+        padding: 0 15px 15px 15px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+    .row > * {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+}
     </style>
 </head>
 <body>
@@ -85,7 +298,7 @@ $active_customers = $active_cust_row['active'];
 
     <div class="sidebar">
         <div class="menu">
-            <img src="images/washwave-logo.jpg" class="logo" alt="Logo">
+            <img src="images/wash_wave-logo.jpg" class="logo" alt="WashWave Logo">
             <a href="admin-dashboard.php"><i class="fas fa-th-large"></i>Dashboard</a>
             <a href="admin-customers.php"><i class="fas fa-users" style="color: rgb(106, 105, 105);"></i><span style="color: rgb(106, 105, 105);">Customers</span></a>
             <a href="admin-orders.php"><i class="fas fa-box"></i>Orders</a>

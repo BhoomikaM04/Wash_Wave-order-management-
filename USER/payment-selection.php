@@ -223,8 +223,21 @@ body {
     align-items: center;
 }
 
-.rzp-workspace-header h6 { margin: 0; font-size: 15px; font-weight: 600; color: #1e293b; }
-.rzp-workspace-header .btn-close-rzp { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; line-height: 1;}
+.rzp-workspace-header h6 { 
+    margin: 0; 
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b; 
+}
+
+.rzp-workspace-header .btn-close-rzp { 
+    background: none;
+    border: none;
+    font-size: 24px; 
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+}
 
 .rzp-workspace-body {
     padding: 30px;
@@ -254,12 +267,30 @@ body {
     background: #f0f6ff;
 }
 
-.upi-app-btn i { font-size: 22px; display: block; margin-bottom: 4px;}
-.upi-app-btn span { font-size: 11px; font-weight: 600; color: #475569; display: block;}
+.upi-app-btn i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 4px;
+}
 
-.color-gpay { color: #ea4335; }
-.color-phonepe { color: #5f259f; }
-.color-paytm { color: #00baf2; }
+.upi-app-btn span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    display: block;
+}
+
+.color-gpay {
+    color: #ea4335;
+}
+
+.color-phonepe {
+    color: #5f259f;
+}
+
+.color-paytm {
+    color: #00baf2;
+}
 
 /* Custom Form Input Fields Adjustments */
 .rzp-field-container {
@@ -304,7 +335,9 @@ body {
     transition: 0.2s;
 }
 
-.btn-rzp-pay:hover { background: #1d4ed8; }
+.btn-rzp-pay:hover { 
+    background: #1d4ed8; 
+}
 
 /* ==========================================================================
    CINEMATIC COIN AND CHECKMARK ANIMATION MATRIX OVERLAY
@@ -381,17 +414,55 @@ body {
    DESKTOP RESPONSIVE LAYOUT BLUEPRINTS (1024px Grid)
    ========================================================================== */
 @media (min-width: 1024px) {
-    .dashboard-container { flex-direction: row; }
-    .sidebar {
-        position: fixed; top: 0; bottom: auto; left: 0; width: 110px; height: 100vh;
-        box-shadow: 3px 0 12px rgba(0,0,0,.08); flex-direction: column;
-        justify-content: flex-start; padding-top: 20px; background: #fff;
+    .dashboard-container {
+        flex-direction: row;
     }
-    .menu { flex-direction: column; justify-content: flex-start; gap: 10px; height: 100%; }
-    .logo { display: block; width: 60px; height: auto; margin-bottom: 30px; border-radius: 50%; }
-    .menu a { flex: none; margin: 12px 0; width: 100%; font-size: 12px; }
-    .main { margin-left: 110px; width: calc(100% - 110px); padding-bottom: 0; }
-    .content { padding: 40px; }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: auto;
+        left: 0;
+        width: 110px;
+        height: 100vh;
+        box-shadow: 3px 0 12px rgba(0,0,0,.08);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 20px;
+        background: #fff;
+    }
+
+    .menu {
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 10px;
+        height: 100%;
+    }
+
+    .logo {
+        display: block;
+        width: 60px;
+        height: auto;
+        margin-bottom: 30px;
+        border-radius: 50%;
+    }
+
+    .menu a {
+        flex: none;
+        margin: 12px 0;
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .main {
+        margin-left: 110px;
+        width: calc(100% - 110px);
+        padding-bottom: 0;
+    }
+
+    .content {
+        padding: 40px;
+    }
 }
 
 /* ==========================================================================

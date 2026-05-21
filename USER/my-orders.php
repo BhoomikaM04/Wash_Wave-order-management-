@@ -33,34 +33,127 @@ if (isset($_GET['action']) && $_GET['action'] == 'cancel_order' && isset($_GET['
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #f8f9fa; font-family: Arial, sans-serif; }
-        .main-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 30px; margin-top: 40px; }
-        
-        /* MATCHED TO PREVIOUS CODES: Custom Dark Table Row Formatting Blueprints */
-        .custom-dark-header { background-color: #212529 !important; }
-        .custom-dark-header th { padding: 14px 16px; font-weight: 600; color: #ffffff !important; background-color: #212529 !important; border-bottom: none; font-size: 14px; }
-        
-        /* MATCHED TO PREVIOUS CODES: Unified Action Button Style mapping */
-        .back-items-btn { display: inline-flex; align-items: center; text-decoration: none; background-color: #212529; color: #ffffff !important; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all 0.2s ease-in-out; border: none; }
-        .back-items-btn:hover { background-color: rgb(106, 105, 105); color: #ffffff !important; }
+       body {
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
 
-        /* Modernized Matching Lifecycle Badges */
-        .badge-status { padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 13px; text-transform: capitalize; display: inline-block; }
-        .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-processing { background-color: #cff4fc; color: #055160; }
-        .status-ready { background-color: #e0fbf7; color: #007764; }
-        .status-completed { background-color: #d1e7dd; color: #0f5132; }
-        .status-cancelled { background-color: #ef4444; color: #ffffff; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2); }
+.main-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-top: 40px;
+}
 
-        /* Professional Payment Mode Badges */
-        .pm-badge { font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
-        .pm-upi { color: #0d6efd; }
-        .pm-cod { color: #4f46e5; }
+/* MATCHED TO PREVIOUS CODES: Custom Dark Table Row Formatting Blueprints */
+.custom-dark-header {
+    background-color: #212529 !important;
+}
 
-        /* Separate Payment Status Badges matching Admin Panel */
-        .badge-payment { padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-block; }
-        .pay-paid { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .pay-unpaid { background-color: #e2e8f0; color: #64748b; border: 1px solid #cbd5e1; font-family: monospace; }
+.custom-dark-header th {
+    padding: 14px 16px;
+    font-weight: 600;
+    color: #ffffff !important;
+    background-color: #212529 !important;
+    border-bottom: none;
+    font-size: 14px;
+}
+
+/* MATCHED TO PREVIOUS CODES: Unified Action Button Style mapping */
+.back-items-btn {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    background-color: #212529;
+    color: #ffffff !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    border: none;
+}
+
+.back-items-btn:hover {
+    background-color: rgb(106, 105, 105);
+    color: #ffffff !important;
+}
+
+/* Modernized Matching Lifecycle Badges */
+.badge-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-processing {
+    background-color: #cff4fc;
+    color: #055160;
+}
+
+.status-ready {
+    background-color: #e0fbf7;
+    color: #007764;
+}
+
+.status-completed {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-cancelled {
+    background-color: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
+}
+
+/* Professional Payment Mode Badges */
+.pm-badge {
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pm-upi {
+    color: #0d6efd;
+}
+
+.pm-cod {
+    color: #4f46e5;
+}
+
+/* Separate Payment Status Badges matching Admin Panel */
+.badge-payment {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.pay-paid {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.pay-unpaid {
+    background-color: #e2e8f0;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    font-family: monospace;
+}
     </style>
 </head>
 <body>
