@@ -13,9 +13,16 @@ if (isset($_POST['update_status'])) {
     $order_id = intval($_POST['order_id']);
     $new_status = $_POST['status'];
     
+    // Map 'Delivered' back to 'Completed' if your database schema strictly expects 'Completed'
+    if ($new_status === 'Delivered') {
+        $db_save_status = 'Completed';
+    } else {
+        $db_save_status = $new_status;
+    }
+
     $status_update = "UPDATE orders SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($status_update);
-    $stmt->bind_param("si", $new_status, $order_id);
+    $stmt->bind_param("si", $db_save_status, $order_id);
     if ($stmt->execute()) {
         header("Location: admin-orders-pending.php?success=Laundry status updated successfully!");
         exit();
@@ -50,7 +57,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
         .status-pending { background-color: #fff3cd; color: #856404; }
         .status-processing { background-color: #cff4fc; color: #055160; }
         .status-ready { background-color: #e0fbf7; color: #007764; }
-        .status-completed { background-color: #d1e7dd; color: #0f5132; }
+        /* CHANGED: Remapped style matching from completed to delivered */
+        .status-delivered, .status-completed { background-color: #d1e7dd; color: #0f5132; }
         .status-cancelled { background-color: #ef4444; color: #ffffff; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2); }
         .badge-payment { padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-block; }
         .pay-paid { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -94,7 +102,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                 <tbody>
                     <?php
                     // FILTER: Only returns Pending or newly Paid initial statuses
-                    $query = "SELECT * FROM orders WHERE status = 'Pending' OR status = 'Paid' ORDER BY created_at DESC";
+                    $query = "SELECT * FROM orders WHERE status = 'Pending' OR status = 'Paid' OR status = 'Processing' ORDER BY created_at DESC";
                     $result = $conn->query($query);
 
                     if ($result && $result->num_rows > 0) {
@@ -127,9 +135,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                                         <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
                                         <select name="status" class="form-select form-select-sm" style="width: 120px;">
                                             <?php
-                                            $statuses = ['Pending', 'Processing', 'Ready', 'Completed', 'Cancelled'];
+                                            // CHANGED: Replaced 'Completed' option string value with 'Delivered'
+                                            $statuses = ['Pending', 'Processing', 'Ready', 'Delivered', 'Cancelled'];
                                             foreach($statuses as $st) {
-                                                $selected = ($laundry_status == $st) ? 'selected' : '';
+                                                $selected = ($laundry_status == $st || ($st == 'Delivered' && $laundry_status == 'Completed')) ? 'selected' : '';
                                                 echo "<option value='{$st}' {$selected}>{$st}</option>";
                                             }
                                             ?>

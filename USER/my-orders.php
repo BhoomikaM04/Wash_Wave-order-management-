@@ -105,7 +105,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'cancel_order' && isset($_GET['
     color: #007764;
 }
 
-.status-completed {
+/* CHANGED: Swapped completed naming convention background rule targets to delivered */
+.status-delivered, .status-completed {
     background-color: #d1e7dd;
     color: #0f5132;
 }
@@ -204,9 +205,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'cancel_order' && isset($_GET['
                                 $payment_status = 'Unpaid';
                             }
 
-                            // Filter out "Paid" state from leaking into laundry overview layout
+                            // CHANGED: Filter out 'Paid' and switch 'Completed' to 'Delivered' for front-facing visualization
                             if ($db_status === 'Paid') {
                                 $display_status = 'Pending';
+                            } elseif ($db_status === 'Completed') {
+                                $display_status = 'Delivered';
                             } else {
                                 $display_status = $db_status;
                             }

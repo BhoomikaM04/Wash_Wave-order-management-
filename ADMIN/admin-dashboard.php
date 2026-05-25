@@ -38,10 +38,10 @@ $r_cond = empty($where_clause) ? " WHERE status='Ready'" : $where_clause . " AND
 $ready_query = mysqli_query($conn, "SELECT * FROM orders" . $r_cond);
 $ready_orders = mysqli_num_rows($ready_query);
 
-/* COMPLETED */
-$c_cond = empty($where_clause) ? " WHERE status='Completed'" : $where_clause . " AND status='Completed'";
-$completed_query = mysqli_query($conn, "SELECT * FROM orders" . $c_cond);
-$completed_orders = mysqli_num_rows($completed_query);
+/* DELIVERED */
+$d_cond = empty($where_clause) ? " WHERE status='Delivered' OR status='Completed'" : $where_clause . " AND (status='Delivered' OR status='Completed')";
+$delivered_query = mysqli_query($conn, "SELECT * FROM orders" . $d_cond);
+$delivered_orders = mysqli_num_rows($delivered_query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,7 +90,7 @@ $completed_orders = mysqli_num_rows($completed_query);
         .search-box input { border: none; background: transparent; padding: 6px; margin-left: 4px; color: black; width: 100%; outline: none; }
         .mobile-header-logo { display: none; }
 
-        /* --- DASHBOARD METRIC GRADIENTS (Maintained matching clean colors) --- */
+        /* --- DASHBOARD METRIC GRADIENTS --- */
         .cards a { text-decoration: none; display: block; }
         .card-stat { padding: 25px 20px; border-radius: 12px; color: white; text-align: center; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.15); min-height: 180px; border: none; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .card-stat h3 { margin: 10px 0 5px 0; font-size: 16px; font-weight: 500; opacity: 0.9; }
@@ -103,15 +103,15 @@ $completed_orders = mysqli_num_rows($completed_query);
         .pending:hover { box-shadow: 0 0 30px rgba(255, 128, 0, 0.6); }
         .ready { background: linear-gradient(135deg, #00eeff, #09408d); }
         .ready:hover { box-shadow: 0 0 30px rgba(0, 238, 255, 0.6); }
-        .completed { background: linear-gradient(135deg, #00b09b, #96c93d); }
-        .completed:hover { box-shadow: 0 0 30px rgba(1, 197, 138, 0.6); }
+        .delivered { background: linear-gradient(135deg, #00b09b, #96c93d); }
+        .delivered:hover { box-shadow: 0 0 30px rgba(1, 197, 138, 0.6); }
 
         /* --- RECENT ORDER BADGES --- */
-        .status-completed, .status-ready, .status-processing, .status-pending, .status-cancelled { padding: 5px 12px; border-radius: 20px; color: white; font-size: 12px; font-weight: 600; display: inline-block; text-transform: capitalize; }
+        .status-delivered, .status-completed, .status-ready, .status-processing, .status-pending, .status-cancelled { padding: 5px 12px; border-radius: 20px; color: white; font-size: 12px; font-weight: 600; display: inline-block; text-transform: capitalize; }
         .status-pending { background-color: #f59e0b; color: #fff; }
         .status-processing { background-color: #3b82f6; }
         .status-ready { background-color: #14b8a6; }
-        .status-completed { background-color: #22c55e; }
+        .status-delivered, .status-completed { background-color: #22c55e; }
         .status-cancelled { background-color: #ef4444; color: #fff; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2); }
 
         /* --- MOBILE OVERRIDES FOR PHONE LAYOUT RESPONSIVENESS --- */
@@ -201,11 +201,11 @@ $completed_orders = mysqli_num_rows($completed_query);
                     </a>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                    <a href="admin-orders-completed.php">
-                        <div class="card-stat completed">
+                    <a href="admin-orders-delivered.php">
+                        <div class="card-stat delivered">
                             <i class="fas fa-check-circle fa-2x"></i>
-                            <h3>Completed Orders</h3>
-                            <h2><?php echo $completed_orders; ?></h2>
+                            <h3>Delivered Orders</h3>
+                            <h2><?php echo $delivered_orders; ?></h2>
                         </div>
                     </a>
                 </div>
@@ -234,7 +234,15 @@ $completed_orders = mysqli_num_rows($completed_query);
                                 if (mysqli_num_rows($query) > 0) {
                                     while($row = mysqli_fetch_assoc($query)) {
                                         $db_status = $row['status'];
-                                        $display_status = ($db_status === 'Paid') ? 'Pending' : $db_status;
+                                        
+                                        // Standardize status outputs
+                                        if ($db_status === 'Paid') {
+                                            $display_status = 'Pending';
+                                        } elseif ($db_status === 'Completed') {
+                                            $display_status = 'Delivered';
+                                        } else {
+                                            $display_status = $db_status;
+                                        }
                                 ?>
                                 <tr>
                                 <td class="fw-bold">#<?php echo $row['id']; ?></td>
@@ -275,9 +283,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
     const pendingCount = <?php echo $pending_orders; ?>;
     const readyCount = <?php echo $ready_orders; ?>;
-    const completedCount = <?php echo $completed_orders; ?>;
+    const deliveredCount = <?php echo $delivered_orders; ?>;
 
-    if (pendingCount === 0 && readyCount === 0 && completedCount === 0) {
+    if (pendingCount === 0 && readyCount === 0 && deliveredCount === 0) {
         ctx.font = "14px Arial";
         ctx.fillStyle = "#999";
         ctx.textAlign = "center";
@@ -288,9 +296,9 @@ document.addEventListener("DOMContentLoaded", function () {
     new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Pending', 'Ready', 'Completed'],
+            labels: ['Pending', 'Ready', 'Delivered'],
             datasets: [{
-                data: [pendingCount, readyCount, completedCount],
+                data: [pendingCount, readyCount, deliveredCount],
                 backgroundColor: [
                     '#ff9f43', 
                     '#00d2ff', 

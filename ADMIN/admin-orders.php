@@ -77,12 +77,13 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
     color: #007764;
 }
 
-.status-completed {
+/* UPDATED: Remapped style matching from completed to delivered */
+.status-delivered, .status-completed {
     background-color: #d1e7dd;
     color: #0f5132;
 }
 
-/* FIXED: Professional Red Cancelled Badge Style matching User Side */
+/* Professional Red Cancelled Badge Style matching User Side */
 .status-cancelled {
     background-color: #ef4444;
     color: #ffffff;
@@ -182,9 +183,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                                 $payment_status = 'Unpaid';
                             }
 
-                            // Determine Laundry Progress Status safely
+                            // Determine Laundry Progress Status safely and swap Completed -> Delivered
                             if ($db_status === 'Paid') {
                                 $laundry_status = 'Pending'; 
+                            } elseif ($db_status === 'Completed') {
+                                $laundry_status = 'Delivered';
                             } else {
                                 $laundry_status = $db_status;
                             }
@@ -210,9 +213,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                                         <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
                                         <select name="status" class="form-select form-select-sm" style="width: 120px;">
                                             <?php
-                                            $statuses = ['Pending', 'Processing', 'Ready', 'Completed', 'Cancelled'];
+                                            // CHANGED: Replaced 'Completed' option string array component with 'Delivered'
+                                            $statuses = ['Pending', 'Processing', 'Ready', 'Delivered', 'Cancelled'];
                                             foreach($statuses as $st) {
-                                                $selected = ($laundry_status == $st) ? 'selected' : '';
+                                                // Ensure historical database evaluations find selection match cleanly
+                                                $selected = ($laundry_status == $st || ($st == 'Delivered' && $laundry_status == 'Completed')) ? 'selected' : '';
                                                 echo "<option value='{$st}' {$selected}>{$st}</option>";
                                             }
                                             ?>

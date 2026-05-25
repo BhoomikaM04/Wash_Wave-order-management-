@@ -11,11 +11,18 @@ if (isset($_POST['update_status'])) {
     $order_id = intval($_POST['order_id']);
     $new_status = $_POST['status'];
     
+    // Map 'Delivered' back to 'Completed' if your database schema strictly expects 'Completed'
+    if ($new_status === 'Delivered') {
+        $db_save_status = 'Completed';
+    } else {
+        $db_save_status = $new_status;
+    }
+
     $status_update = "UPDATE orders SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($status_update);
-    $stmt->bind_param("si", $new_status, $order_id);
+    $stmt->bind_param("si", $db_save_status, $order_id);
     if ($stmt->execute()) {
-        header("Location: admin-orders-completed.php?success=Laundry status updated successfully!");
+        header("Location: admin-orders-delivered.php?success=Laundry status updated successfully!");
         exit();
     }
 }
@@ -28,7 +35,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
     $stmt->bind_param("i", $order_id);
     
     if ($stmt->execute()) {
-        header("Location: admin-orders-completed.php?success=Payment marked as Paid in database!");
+        header("Location: admin-orders-delivered.php?success=Payment marked as Paid in database!");
         exit();
     }
 }
@@ -38,7 +45,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Completed Orders Panel - WashWave</title>
+    <title>Delivered Orders Panel - WashWave</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -47,7 +54,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
         .status-pending { background-color: #fff3cd; color: #856404; }
         .status-processing { background-color: #cff4fc; color: #055160; }
         .status-ready { background-color: #e0fbf7; color: #007764; }
-        .status-completed { background-color: #d1e7dd; color: #0f5132; }
+        .status-delivered, .status-completed { background-color: #d1e7dd; color: #0f5132; }
         .status-cancelled { background-color: #ef4444; color: #ffffff; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2); }
         .badge-payment { padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; display: inline-block; }
         .pay-paid { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -63,7 +70,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
 <div class="container-fluid px-4 py-5">
     <div class="card border-0 shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold text-dark m-0"><i class="fas fa-check-circle me-2 text-success"></i> WashWave Completed Orders Registry</h4>
+            <h4 class="fw-bold text-dark m-0"><i class="fas fa-check-circle me-2 text-success"></i> WashWave Delivered Orders Registry</h4>
             <a href="admin-dashboard.php" class="btn btn-dark btn-sm">Dashboard Overview</a>
         </div>
 
@@ -90,8 +97,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                 </thead>
                 <tbody>
                     <?php
-                    // FILTER: Strictly queries records marked as 'Completed'
-                    $query = "SELECT * FROM orders WHERE status = 'Completed' ORDER BY created_at DESC";
+                    // FILTER: Queries records marked as either 'Delivered' or legacy 'Completed' records
+                    $query = "SELECT * FROM orders WHERE status = 'Delivered' OR status = 'Completed' ORDER BY created_at DESC";
                     $result = $conn->query($query);
 
                     if ($result && $result->num_rows > 0) {
@@ -99,6 +106,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                             $db_status = $row['status']; 
                             $payment_method = $row['payment_method'];
                             $payment_status = ($payment_method === 'UPI' || $db_status === 'Paid') ? 'Paid' : 'Unpaid';
+                            
+                            // Unify display naming convention
+                            $display_status = ($db_status === 'Completed') ? 'Delivered' : $db_status;
                             ?>
                             <tr>
                                 <td><strong>#WS-<?php echo $row['id']; ?></strong></td>
@@ -107,15 +117,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                                 <td><small><?php echo htmlspecialchars($row['cloth_list']); ?> (<?php echo $row['total_clothes']; ?> Pcs)</small></td>
                                 <td><strong class='text-primary'>₹<?php echo htmlspecialchars($row['total_price']); ?></strong></td>
                                 <td><?php echo htmlspecialchars($row['delivery_date']); ?></td>
-                                <td><span class="badge-status status-completed">Completed</span></td>
+                                <td><span class="badge-status status-delivered">Delivered</span></td>
                                 <td>
-                                    <form action="admin-orders-completed.php" method="POST" class="d-flex gap-1 align-items-center">
+                                    <form action="admin-orders-delivered.php" method="POST" class="d-flex gap-1 align-items-center">
                                         <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
                                         <select name="status" class="form-select form-select-sm" style="width: 120px;">
                                             <?php
-                                            $statuses = ['Pending', 'Processing', 'Ready', 'Completed', 'Cancelled'];
+                                            $statuses = ['Pending', 'Processing', 'Ready', 'Delivered', 'Cancelled'];
                                             foreach($statuses as $st) {
-                                                $selected = ($db_status == $st) ? 'selected' : '';
+                                                $selected = ($display_status == $st) ? 'selected' : '';
                                                 echo "<option value='{$st}' {$selected}>{$st}</option>";
                                             }
                                             ?>
@@ -127,7 +137,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                                     <?php if ($payment_status === 'Paid'): ?>
                                         <span class="text-success small fw-bold"><i class="fas fa-check-circle me-1"></i> Received</span>
                                     <?php else: ?>
-                                        <a href="admin-orders-completed.php?action=confirm_received&order_id=<?php echo $row['id']; ?>" class="btn btn-sm btn-success fw-bold py-1 px-2" style="font-size:12px;">Confirm Cash Received</a>
+                                        <a href="admin-orders-delivered.php?action=confirm_received&order_id=<?php echo $row['id']; ?>" class="btn btn-sm btn-success fw-bold py-1 px-2" style="font-size:12px;">Confirm Cash Received</a>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -148,7 +158,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_received' && isset($_G
                             <?php
                         }
                     } else {
-                        echo "<tr><td colspan='11' class='text-center py-4 text-muted'>No completed entries recorded yet.</td></tr>";
+                        echo "<tr><td colspan='11' class='text-center py-4 text-muted'>No delivered entries recorded yet.</td></tr>";
                     }
                     ?>
                 </tbody>
